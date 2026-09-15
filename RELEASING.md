@@ -215,11 +215,23 @@ submitting, along with the filename.
 `reviewDecision: REVIEW_REQUIRED`. Their CI: **`Comment` passed**, `Deploy`
 skipped. There is no published review SLA.
 
-⚠️ **The skipped Deploy and the bot's warning are NOT ours to fix.** The bot
-comments: *"This repository is a forked repository. For security reasons,
-deployments from forked repositories are not automatic. To request a deployment,
-add the '🚀request-deploy' label… (Only some members can add labels)."* A preview
-deployment is gated on a maintainer label an outside contributor cannot apply.
+⚠️ **The skipped Deploy and the bot's warning are NOT ours to fix — measured,
+not assumed.** The bot comments: *"This repository is a forked repository. For
+security reasons, deployments from forked repositories are not automatic. To
+request a deployment, add the '🚀request-deploy' label… (Only some members can
+add labels)."*
+
+Two facts settle whether that needs action:
+
+| Check | Result |
+|---|---|
+| Our permission on `DocusaurusCommunity/website` | `{"admin":false,"maintain":false,"pull":true,"push":false,"triage":false}` — **pull only**, so the label is literally unappliable by us |
+| `mergeStateStatus` vs check rollup | **`BLOCKED`** while the rollup is **`SUCCESS`** |
+
+🔑 **A skipped check does not fail a rollup**, so `BLOCKED` is the
+`REVIEW_REQUIRED` rule, **not** the deploy label. The preview deployment is a
+convenience a maintainer can trigger before merging; a maintainer approving
+clears the block either way. **Nothing to do but wait.**
 
 🔑 **Same shape as the Vercel `Authorization required to deploy` failure on
 `nuxt/scripts#899`** (§11a.4 of the strategy doc): a red or skipped check on a
