@@ -140,51 +140,93 @@ shape on GitHub Packages, which wants `delete:packages`; the estate's
 **Owner decision, 15-09-2026: take BOTH — community directory first, Meta CLA
 separately.**
 
-### 1. `docusaurus.community` — CLA-free, do this one first
+### 1. `docusaurus.community` — 🟢 SUBMITTED 15-09-2026, PR #70
 
-Community-run (not Meta), CC BY-SA 4.0. Submission is a **comment on a GitHub
-Discussion**, not a PR: `github.com/homotechsual/docusaurus.community`
-discussion #3. The maintainer says so explicitly — a PR is technically possible
-but *"apart from small edits, we prefer to handle the PR ourselves"*.
+Community-run (not Meta), CLA-free.
 
-The comment carries these fields:
+🔁 **The submission mechanism CHANGED, and the earlier note here was already
+stale when it was written.** It said to comment on GitHub Discussion #3 at
+`homotechsual/docusaurus.community`. Measured 15-09-2026:
 
-| Field | Value |
-|---|---|
-| Plugin name | ≤60 chars, and **must not contain "Docusaurus Plugin"** — use `Pulse Analytics` |
-| Description | ≤120 chars |
-| Plugin website | `https://pulse.ciphera.net` |
-| Plugin source URL | `https://github.com/ciphera-net/pulse-docusaurus` |
-| Tags | from `favorite, search, api, utility, content, theme, markdown, analytics, integration` — ours is **`analytics`** |
-| Author | Ciphera |
-| Maintained | true |
-| NPM Packages | `["@ciphera-net/pulse-docusaurus"]` |
-| Minimum Version | the semver floor measured in the table above |
+- The canonical repo is **`DocusaurusCommunity/website`** (`homotechsual/…`
+  redirects there).
+- The per-plugin YAML refactor **has landed**. Each entry is now one file in
+  **`data/plugins/<author>.<plugin-short-name>.yaml`**, and the directory is
+  powered by `@homotechsual/docusaurus-plugin-showcase`.
+- The contributing guide is `contributing/plugins.mdx`, rendered at
+  `docusaurus.community/contributing/plugins`.
 
-They take the screenshot themselves. No account beyond GitHub, no fee, no CLA,
-no published review SLA. The directory is being refactored towards per-plugin
-YAML self-submission — if that has landed by the time you read this, check the
-repo before commenting.
+🔑 **The caveat that caught this was already in this file** — "the directory is
+being refactored towards per-plugin YAML self-submission; if that has landed by
+the time you read this, check the repo before commenting". It cost one API call
+to check and would have cost a wrong-format comment not to. **Write the caveat
+when you learn the fact, not after it bites.**
 
-**Ready to paste**, once the npm package is readable (it is, since 16-09-2026):
+#### Our entry
 
+`data/plugins/ciphera-net.pulse-analytics.yaml`:
+
+```yaml
+# yaml-language-server: $schema=https://docusaurus.community/schema/plugin/1.0.0.json
+id: ciphera-net.pulse-analytics
+name: Pulse Analytics
+description: Adds privacy-first Pulse Analytics to your Docusaurus site. No cookies, no personal data, under 3 KB.
+preview: null
+website: https://pulse.ciphera.net
+source: https://github.com/ciphera-net/pulse-docusaurus
+author: ciphera-net
+tags:
+  - analytics
+  - integration
+minimumVersion: 3.0.0
+status: maintained
+npmPackages:
+  - "@ciphera-net/pulse-docusaurus"
 ```
-Plugin name: Pulse Analytics
-Plugin description: Privacy-first analytics in one plugin. No cookies, no personal data, under 3 KB.
-Plugin website: https://pulse.ciphera.net
-Plugin source URL: https://github.com/ciphera-net/pulse-docusaurus
-Tags: analytics
-Author: Ciphera
-Maintained: true
-NPM Packages: ["@ciphera-net/pulse-docusaurus"]
-Minimum Version: 3.0.0
+
+Derived from **three** accepted entries that agree on the shape
+(`addono.goatcounter`, `dipakparmar.umami`, `branchup.simple-analytics`) rather
+than from the docs alone, and then **validated against their published JSON
+schema** before submission:
+
+```bash
+curl -s https://docusaurus.community/schema/plugin/1.0.0.json -o schema.json
+python3 -c "import yaml,json,jsonschema; jsonschema.validate(yaml.safe_load(open('entry.yaml')), json.load(open('schema.json')))"
 ```
 
-The description is 94 characters, inside the 120 cap; the name is 16, inside 60,
-and contains no "Docusaurus Plugin" (which the template forbids). **Minimum
-Version is `3.0.0`, not `3.10.2`** — that is what the compatibility table above
-actually measured, and claiming the newest version tested would understate the
-range for no reason.
+⚠️ **`minimumVersion` is `3.0.0`, not `3.10.2`.** It is the floor the
+compatibility table measured. Putting the newest version tested there would
+understate the range for no reason.
+
+🔑 **`id` must be unique** — checked against all 82 existing entries before
+submitting, along with the filename.
+
+#### Two submission routes; we took the second, deliberately
+
+- **Option A, which the guide calls "recommended":** open an issue from the
+  `add-plugin.yml` form and a bot generates the YAML and a draft PR.
+- **Option B, manual:** fork, add the file, open a PR. **This is what was
+  done.** A hand-built issue body would have been a guess at the bot's parser,
+  with a malformed draft PR for a maintainer to clean up as the failure mode.
+  A YAML file can be validated against the published schema *before* it is ever
+  submitted, and their CI validates it again. Prefer the route you can check.
+
+**Status:** `DocusaurusCommunity/website` **PR #70**, one file, mergeable,
+`reviewDecision: REVIEW_REQUIRED`. Their CI: **`Comment` passed**, `Deploy`
+skipped. There is no published review SLA.
+
+⚠️ **The skipped Deploy and the bot's warning are NOT ours to fix.** The bot
+comments: *"This repository is a forked repository. For security reasons,
+deployments from forked repositories are not automatic. To request a deployment,
+add the '🚀request-deploy' label… (Only some members can add labels)."* A preview
+deployment is gated on a maintainer label an outside contributor cannot apply.
+
+🔑 **Same shape as the Vercel `Authorization required to deploy` failure on
+`nuxt/scripts#899`** (§11a.4 of the strategy doc): a red or skipped check on a
+fork PR is very often the upstream's own fork policy rather than a defect in the
+contribution. **Read which check failed and why before touching the branch** —
+pushing "fixes" at an upstream deployment gate is wasted work that also muddies
+the diff a reviewer sees.
 
 ### 2. The official list — costs a Meta CLA
 
