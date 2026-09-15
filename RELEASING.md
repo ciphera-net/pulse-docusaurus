@@ -88,51 +88,37 @@ rm -f "$NPMRC"
 
 Never put a token on a command line; write it to a `umask 077` file and delete it.
 
-### 🔴 Publish state, 15-09-2026 — HALF PUBLISHED
+### ✅ Publish state, 16-09-2026 — BOTH REGISTRIES
 
 | Registry | State |
 |---|---|
-| **GitHub Packages** | 🟢 **`1.0.0` live and readable immediately** — no propagation lag at all, unlike npmjs |
-| **npmjs** | 🔴 **BLOCKED on token scope.** Not published |
+| **GitHub Packages** | 🟢 `1.0.0` — readable immediately, no propagation lag |
+| **npmjs** | 🟢 `1.0.0` |
 
-⚠️ **This is the exact split that stranded `@ciphera-net/tessera`** (GitHub
-Packages froze at 0.1.3 while npmjs had 0.2.1, and two frontends pinned the
-ceiling of the registry they happened to be pointed at). It is recorded here
-loudly rather than left silent. Estate machines *can* install this today, because
-their `~/.npmrc` maps `@ciphera-net` to GitHub Packages — **the public cannot**,
-and npmjs is the registry that matters for a public integration.
+🔴 **Use `CIPHERA_SCOPE_NPMJS_TOKEN` from the workspace `.env`, not
+`NPMJS_TOKEN`.** The `.env` holds three npm tokens; only that one can write
+under the `@ciphera-net` scope. The others authenticate fine — `npm whoami`
+returns `uz1mani` for all of them — so **authenticating proves nothing**. The
+one-request test that separates them:
 
-### 🔴 A granular npm token scoped to selected packages CANNOT create a new package — and it says 404
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $TOKEN" \
+  https://registry.npmjs.org/-/org/ciphera-net/user
+```
 
-`npm publish` to npmjs returned, verbatim:
+**200** (returning `{"uz1mani":"owner"}`) is the working token; **403** is not.
+A publish with the wrong one fails as `404 … could not be found or you do not
+have permission`, which reads like a missing package rather than a wrong
+credential, and cost an hour of diagnosing the wrong thing.
 
-> `npm error 404 The requested resource '@ciphera-net/pulse-docusaurus@1.0.0'
-> could not be found or you do not have permission to access it.`
+### 🔑 Two npm 404s that point in opposite directions
 
-**That reads as "the package does not exist", which is true but is not the
-problem.** Diagnosed rather than guessed, with three read-only checks:
+- A 404 **from** the publish call (`npm publish` exits non-zero) is a
+  **credential** problem — almost certainly the wrong token, see above.
+- A 404 **after** a successful publish (`npm publish` exits 0) is
+  **propagation**, and means nothing. See below.
 
-- `npm whoami` against npmjs with the same token → **`uz1mani`**. The token is
-  valid and authenticated.
-- `npm view @ciphera-net/pulse-astro version` with the same token → **`1.0.1`**.
-  It can read the scope.
-- `GET registry.npmjs.org/@ciphera-net%2fpulse-docusaurus` → **404**; the same
-  request for `pulse-astro` → **200**. The package genuinely does not exist yet.
-
-So: authentication fine, scope readable, package absent — which leaves token
-**permission scope** as the cause. The token in use was created 2026-09-15 for
-the `pulse-astro` release and is granular; a granular token restricted to
-selected packages cannot *create* a new one, and npm answers 404 rather than 403.
-
-📍 **Owner action to unblock:** widen the token to the whole `@ciphera-net` scope
-(or issue a new one with write access to it), then re-run publish step 1 above.
-Nothing else about the package needs to change — the tarball that reached GitHub
-Packages is the one that will go to npmjs.
-
-🔑 **The pair of npm 404 lessons now point in opposite directions, so read them
-together:** a 404 *after* a successful publish is propagation and means nothing
-(see below); a 404 *from* the publish call is permission. The status code is the
-same; what distinguishes them is whether `npm publish` exited 0.
+The status code is identical. What separates them is the exit code.
 
 ### ⏳ npmjs takes about four minutes to become readable
 
@@ -179,6 +165,26 @@ They take the screenshot themselves. No account beyond GitHub, no fee, no CLA,
 no published review SLA. The directory is being refactored towards per-plugin
 YAML self-submission — if that has landed by the time you read this, check the
 repo before commenting.
+
+**Ready to paste**, once the npm package is readable (it is, since 16-09-2026):
+
+```
+Plugin name: Pulse Analytics
+Plugin description: Privacy-first analytics in one plugin. No cookies, no personal data, under 3 KB.
+Plugin website: https://pulse.ciphera.net
+Plugin source URL: https://github.com/ciphera-net/pulse-docusaurus
+Tags: analytics
+Author: Ciphera
+Maintained: true
+NPM Packages: ["@ciphera-net/pulse-docusaurus"]
+Minimum Version: 3.0.0
+```
+
+The description is 94 characters, inside the 120 cap; the name is 16, inside 60,
+and contains no "Docusaurus Plugin" (which the template forbids). **Minimum
+Version is `3.0.0`, not `3.10.2`** — that is what the compatibility table above
+actually measured, and claiming the newest version tested would understate the
+range for no reason.
 
 ### 2. The official list — costs a Meta CLA
 
