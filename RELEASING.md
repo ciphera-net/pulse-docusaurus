@@ -88,6 +88,52 @@ rm -f "$NPMRC"
 
 Never put a token on a command line; write it to a `umask 077` file and delete it.
 
+### 🔴 Publish state, 15-09-2026 — HALF PUBLISHED
+
+| Registry | State |
+|---|---|
+| **GitHub Packages** | 🟢 **`1.0.0` live and readable immediately** — no propagation lag at all, unlike npmjs |
+| **npmjs** | 🔴 **BLOCKED on token scope.** Not published |
+
+⚠️ **This is the exact split that stranded `@ciphera-net/tessera`** (GitHub
+Packages froze at 0.1.3 while npmjs had 0.2.1, and two frontends pinned the
+ceiling of the registry they happened to be pointed at). It is recorded here
+loudly rather than left silent. Estate machines *can* install this today, because
+their `~/.npmrc` maps `@ciphera-net` to GitHub Packages — **the public cannot**,
+and npmjs is the registry that matters for a public integration.
+
+### 🔴 A granular npm token scoped to selected packages CANNOT create a new package — and it says 404
+
+`npm publish` to npmjs returned, verbatim:
+
+> `npm error 404 The requested resource '@ciphera-net/pulse-docusaurus@1.0.0'
+> could not be found or you do not have permission to access it.`
+
+**That reads as "the package does not exist", which is true but is not the
+problem.** Diagnosed rather than guessed, with three read-only checks:
+
+- `npm whoami` against npmjs with the same token → **`uz1mani`**. The token is
+  valid and authenticated.
+- `npm view @ciphera-net/pulse-astro version` with the same token → **`1.0.1`**.
+  It can read the scope.
+- `GET registry.npmjs.org/@ciphera-net%2fpulse-docusaurus` → **404**; the same
+  request for `pulse-astro` → **200**. The package genuinely does not exist yet.
+
+So: authentication fine, scope readable, package absent — which leaves token
+**permission scope** as the cause. The token in use was created 2026-09-15 for
+the `pulse-astro` release and is granular; a granular token restricted to
+selected packages cannot *create* a new one, and npm answers 404 rather than 403.
+
+📍 **Owner action to unblock:** widen the token to the whole `@ciphera-net` scope
+(or issue a new one with write access to it), then re-run publish step 1 above.
+Nothing else about the package needs to change — the tarball that reached GitHub
+Packages is the one that will go to npmjs.
+
+🔑 **The pair of npm 404 lessons now point in opposite directions, so read them
+together:** a 404 *after* a successful publish is propagation and means nothing
+(see below); a 404 *from* the publish call is permission. The status code is the
+same; what distinguishes them is whether `npm publish` exited 0.
+
 ### ⏳ npmjs takes about four minutes to become readable
 
 A successful publish prints `+ @ciphera-net/pulse-docusaurus@1.0.0` and exits 0
