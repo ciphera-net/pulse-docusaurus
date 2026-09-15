@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // CommonJS on purpose. Every official Docusaurus plugin ships CJS
+    // (`@docusaurus/plugin-google-gtag@3.10.2` is `main: lib/index.js`, no
+    // `type: module`), and that is the shape Docusaurus's plugin loader has
+    // been proven to accept from both an ESM and a CJS `docusaurus.config.js`.
+    // Matching the artefact the ecosystem already accepts beats matching a spec.
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}

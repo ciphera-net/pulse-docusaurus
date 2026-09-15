@@ -1,0 +1,48 @@
+{
+  "name": "@ciphera-net/pulse-docusaurus",
+  "version": "1.0.0",
+  "description": "Add Pulse Analytics — privacy-first web analytics — to a Docusaurus site with one plugin. No cookies, no personal data, under 3 KB.",
+  "license": "Apache-2.0",
+  "homepage": "https://pulse.ciphera.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ciphera-net/pulse-docusaurus.git"
+  },
+  "bugs": "https://github.com/ciphera-net/pulse-docusaurus/issues",
+  "keywords": [
+    "docusaurus",
+    "docusaurus-plugin",
+    "analytics",
+    "privacy",
+    "cookieless",
+    "gdpr",
+    "pulse"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@docusaurus/core": "^3.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/types": "^3.10.2",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
