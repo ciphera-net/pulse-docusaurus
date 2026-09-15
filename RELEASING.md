@@ -3,9 +3,68 @@
 Two things are separate here and worth keeping separate in your head:
 
 1. **The package.** npm-only and ungated — no account beyond npm, no review, no
-   fee. Publishing makes the plugin installable. Nothing gates this.
-2. **The listing.** Docusaurus has *two* directories, and they are not the same
-   kind of thing. See "Listings" below.
+   fee. Publishing makes the plugin installable, and **nothing gates it**.
+2. **The listings.** There are **three**, each with a different gate and a
+   different maintainer, and none of them blocks the package being usable. See
+   the follow-up tracker immediately below, then "Listings".
+
+🔑 **A listing is never a release gate.** Publish, then list.
+
+## 📍 Follow-up tracker — where this plugin is listed, and how to chase it
+
+State captured **15-09-2026 21:3x UTC**. All three PRs are with maintainers; none
+needs anything from us. Check them all with one command — **run verbatim and
+confirmed working**, not written from memory:
+
+```bash
+for s in facebook/docusaurus:12450 DocusaurusCommunity/website:70 webbertakken/awesome-docusaurus:11; do
+  gh pr view "${s##*:}" --repo "${s%%:*}" \
+    --json number,state,mergeable,mergeStateStatus,reviewDecision,labels \
+    -q '"'"${s%%:*}"'#\(.number): \(.state) \(.mergeable)/\(.mergeStateStatus) review=\(.reviewDecision // "none") labels=\([.labels[].name]|join(",") // "none")"'
+done
+```
+
+| # | Where | Opened | State at capture | Done looks like | If it stalls |
+|---|---|---|---|---|---|
+| 1 | **npmjs** | — | ✅ `1.0.0` live, install-tested | n/a | n/a |
+| 2 | **GitHub Packages** | — | ✅ `1.0.0` live | n/a | n/a |
+| 3 | **npm keyword index** | — | ✅ present in all 114 results for `keywords:docusaurus-plugin` | n/a | ⚠️ a plain **name** search does not surface it and never will while downloads are low — query the index **by keyword**, not by name |
+| 4 | [`DocusaurusCommunity/website#70`](https://github.com/DocusaurusCommunity/website/pull/70) | 21:11 | OPEN, MERGEABLE/**BLOCKED**, `REVIEW_REQUIRED` | merged; entry appears at `docusaurus.community/plugindirectory` | No SLA published. A polite comment after a couple of weeks. ⚠️ `BLOCKED` here is the **review requirement**, not the skipped `Deploy` — a skipped check does not fail a rollup, and the `🚀request-deploy` label is maintainer-only |
+| 5 | [`facebook/docusaurus#12450`](https://github.com/facebook/docusaurus/pull/12450) | 21:35 | OPEN, MERGEABLE/**UNSTABLE**, Meta CLA Check **failing** | CLA check passes → PR tagged `CLA signed` → maintainer merges; entry appears at `docusaurus.io/community/resources` | 🔴 **The CLA bot re-checks ITSELF, up to 1 hour after signing. Do not push a commit to re-trigger it.** If it has not cleared well past that, `cla@meta.com` — the bot names that address |
+| 6 | [`webbertakken/awesome-docusaurus#11`](https://github.com/webbertakken/awesome-docusaurus/pull/11) | 21:35 | OPEN, MERGEABLE/**CLEAN** | merged into `readme.md` → Tracking | Nothing blocks it; it is purely maintainer attention. ⚠️ If they enforce the `docusaurus-plugin-` naming rule, the PR body already offers to close it — **accept that answer**, do not argue it |
+
+### 🔴 Open questions, not just open PRs
+
+- **Meta CLA: individual or corporate?** The bot says, verbatim: *"If you are
+  contributing on behalf of someone else (eg your employer), the individual CLA
+  may not be sufficient and your employer may need to sign the corporate CLA."*
+  This contribution **is** Ciphera BV's work — org-owned repo, Apache-2.0 ©
+  Ciphera BV. The owner signed on 15-09; **if it was the individual form, confirm
+  with `cla@meta.com` that it covers this.** Left open deliberately: it is a legal
+  question, not a technical one.
+
+### Decided, so it is not re-opened
+
+- **Author is `uz1mani` and the forks are personal.** A GitHub organisation
+  **cannot author a pull request** — the author is always a user account, so
+  `ciphera-net` was never available for that line. The *fork* could have been
+  org-owned (`gh repo fork --org ciphera-net`); the owner considered it and
+  ratified personal forks on 15-09. Do not redo them.
+
+### 🔴 What is NOT done, and it is ours rather than theirs
+
+The plugin is published and listed everywhere external. **Our own product does
+not mention it.** See the strategy doc §12, "The registry does not model
+plugins": `lib/integrations.tsx` has an `installMethod` field and
+`app/integrations/[slug]/page.tsx` maps `plugin → "Official plugin"`, and **no
+integration sets it** — so Framer, Astro and Docusaurus all render as plain
+script-tag installs, and `docs.ciphera.net/pulse/framework-guides` mentions
+Docusaurus zero times.
+
+⚠️ **Do not verify that by grepping the live pages for "official plugin".** It
+matches the `verified` status blurb on every entry
+("…script tag or official plugin"), which is a false positive that initially made
+this look like a Docusaurus-only gap. **The structured field is the signal.**
 
 ## Verified against a real build
 
