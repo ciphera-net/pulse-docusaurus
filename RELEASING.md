@@ -229,7 +229,7 @@ when you learn the fact, not after it bites.**
 # yaml-language-server: $schema=https://docusaurus.community/schema/plugin/1.0.0.json
 id: ciphera-net.pulse-analytics
 name: Pulse Analytics
-description: Adds privacy-first Pulse Analytics to your Docusaurus site. No cookies, no personal data, under 3 KB.
+description: Adds privacy-first Pulse Analytics to your Docusaurus site. No cookies, no IP addresses stored, under 3 KB.
 preview: null
 website: https://pulse.ciphera.net
 source: https://github.com/ciphera-net/pulse-docusaurus
