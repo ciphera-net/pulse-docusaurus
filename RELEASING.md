@@ -139,7 +139,7 @@ printf '//registry.npmjs.org/:_authToken=%s\n@ciphera-net:registry=https://regis
 npm publish --registry=https://registry.npmjs.org --access public --userconfig "$NPMRC"
 
 # 2. GitHub Packages — so the estate can install it
-printf '//npm.pkg.github.com/:_authToken=%s\n@ciphera-net:registry=https://npm.pkg.github.com/\n' "$GH_NPM_WRITE_TOKEN" > "$NPMRC"
+printf '//npm.pkg.github.com/:_authToken=%s\n@ciphera-net:registry=https://npm.pkg.github.com/\n' "$GITHUB_PACKAGES_WRITE_TOKEN" > "$NPMRC"
 npm publish --registry=https://npm.pkg.github.com --userconfig "$NPMRC"
 
 rm -f "$NPMRC"
@@ -147,11 +147,15 @@ rm -f "$NPMRC"
 
 Never put a token on a command line; write it to a `umask 077` file and delete it.
 
+Pack once and publish that same file to both registries (`npm pack`, then `npm publish ./<file>.tgz` with each
+`--registry`), so both serve identical bytes. The GitHub Packages half needs `.env` `GITHUB_PACKAGES_WRITE_TOKEN`
+(classic, `write:packages` only, expires 2027-11-08 23:00 UTC).
+
 ### Publish state, 02-11-2026
 
 | Registry | State |
 |---|---|
-| **GitHub Packages** | 🟡 `1.0.0` — readable immediately, no propagation lag. `1.0.1` is not there: that leg needs a **classic** token with `write:packages`, and `.env` holds none (the `gh` token and the fine-grained `GITHUB_RELEASE_TOKEN` cannot publish there) |
+| **GitHub Packages** | 🟢 in sync with npmjs since 09-11-2026: `1.0.1` was published from the npmjs tarball once `.env` had a classic `write:packages` token (`GITHUB_PACKAGES_WRITE_TOKEN`); readable immediately, no propagation lag |
 | **npmjs** | 🟢 `1.0.1` (02-11-2026) |
 
 🔴 **Use `CIPHERA_SCOPE_NPMJS_TOKEN` from the workspace `.env`, not
