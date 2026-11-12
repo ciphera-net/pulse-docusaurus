@@ -12,9 +12,11 @@ Two things are separate here and worth keeping separate in your head:
 
 ## 📍 Follow-up tracker — where this plugin is listed, and how to chase it
 
-State captured **15-09-2026 21:3x UTC**. All three PRs are with maintainers; none
-needs anything from us. Check them all with one command — **run verbatim and
-confirmed working**, not written from memory:
+State re-measured **12-11-2026 15:40 UTC** (first captured 15-09-2026 21:3x UTC). All
+three PRs are settled: two merged, and the official list's PR was closed because
+docusaurus.io no longer lists third-party plugins (row 5). Nothing waits on anyone.
+The command still reports all three (**run verbatim and confirmed working**, not
+written from memory):
 
 ```bash
 for s in facebook/docusaurus:12450 DocusaurusCommunity/website:70 webbertakken/awesome-docusaurus:11; do
@@ -29,12 +31,17 @@ done
 | 1 | **npmjs** | — | ✅ `1.0.0` live, install-tested | n/a | n/a |
 | 2 | **GitHub Packages** | — | ✅ `1.0.0` live | n/a | n/a |
 | 3 | **npm keyword index** | — | ✅ present in all 114 results for `keywords:docusaurus-plugin` | n/a | ⚠️ a plain **name** search does not surface it and never will while downloads are low — query the index **by keyword**, not by name |
-| 4 | [`DocusaurusCommunity/website#70`](https://github.com/DocusaurusCommunity/website/pull/70) | 21:11 | OPEN, MERGEABLE/**BLOCKED**, `REVIEW_REQUIRED` | merged; entry appears at `docusaurus.community/plugindirectory` | No SLA published. A polite comment after a couple of weeks. ⚠️ `BLOCKED` here is the **review requirement**, not the skipped `Deploy` — a skipped check does not fail a rollup, and the `🚀request-deploy` label is maintainer-only |
-| 5 | [`facebook/docusaurus#12450`](https://github.com/facebook/docusaurus/pull/12450) | 21:35 | OPEN, MERGEABLE/**UNSTABLE**, Meta CLA Check **failing** | CLA check passes → PR tagged `CLA signed` → maintainer merges; entry appears at `docusaurus.io/community/resources` | 🔴 **The CLA bot re-checks ITSELF, up to 1 hour after signing. Do not push a commit to re-trigger it.** If it has not cleared well past that, `cla@meta.com` — the bot names that address |
-| 6 | [`webbertakken/awesome-docusaurus#11`](https://github.com/webbertakken/awesome-docusaurus/pull/11) | 21:35 | OPEN, MERGEABLE/**CLEAN** | merged into `readme.md` → Tracking | Nothing blocks it; it is purely maintainer attention. ⚠️ If they enforce the `docusaurus-plugin-` naming rule, the PR body already offers to close it — **accept that answer**, do not argue it |
+| 4 | [`DocusaurusCommunity/website#70`](https://github.com/DocusaurusCommunity/website/pull/70) | 21:11 | ✅ **MERGED 16-09-2026** (13:47 UTC). The entry is live at `docusaurus.community/plugindirectory`, and `DocusaurusCommunity/website#82` (merged 02-11-2026) updated its description | merged; entry appears at `docusaurus.community/plugindirectory` | n/a |
+| 5 | [`facebook/docusaurus#12450`](https://github.com/facebook/docusaurus/pull/12450) | 21:35 | ❌ **CLOSED unmerged 12-11-2026.** docusaurus.io no longer lists third-party plugins, themes or libraries: their `#12949` moved every listed project into the GitHub Discussions category "Plugins, Themes, Presets and Libs" of `meta/docusaurus`. The CLA had cleared on 15-09 | a discussion of our own in that category: done, [`meta/docusaurus` discussion #13004](https://github.com/meta/docusaurus/discussions/13004) (12-11-2026) | n/a. Keep the discussion current when the plugin changes |
+| 6 | [`webbertakken/awesome-docusaurus#11`](https://github.com/webbertakken/awesome-docusaurus/pull/11) | 21:35 | ✅ **MERGED 06-10-2026** | merged into `readme.md` → Tracking | n/a |
 
-### 🔴 Open questions, not just open PRs
+### Open questions, not just open PRs
 
+- ✅ **Answered 15-09-2026 (23:08 UTC): the CLA bot accepted the signature.** It
+  posted, verbatim: *"Thank you for signing our Contributor License Agreement. We
+  can now accept your code for this (and any) Meta Open Source project."* No
+  corporate form and no email to `cla@meta.com` were needed. The original question
+  stays below, because its warning applies again on the next Meta PR.
 - **Meta CLA: individual or corporate?** The bot says, verbatim: *"If you are
   contributing on behalf of someone else (eg your employer), the individual CLA
   may not be sufficient and your employer may need to sign the corporate CLA."*
@@ -204,7 +211,7 @@ shape on GitHub Packages, which wants `delete:packages`; the estate's
 **Owner decision, 15-09-2026: take BOTH — community directory first, Meta CLA
 separately.**
 
-### 1. `docusaurus.community` — 🟢 SUBMITTED 15-09-2026, PR #70
+### 1. `docusaurus.community` — 🟢 LIVE since 16-09-2026 (PR #70)
 
 Community-run (not Meta), CLA-free.
 
@@ -311,6 +318,11 @@ CLA bot blocks the merge until a CLA is signed at `code.facebook.com/cla`. No
 review SLA is published. This is a deliberate, owner-approved exception to the
 sovereignty rule (no new US companies in the critical path) on the grounds that
 it is a documentation table row and grants nothing operational.
+
+🔁 **Closed 12-11-2026.** docusaurus.io stopped listing third-party projects, and
+the PR was closed unmerged (tracker row 5). The plugin is presented instead in its
+own discussion, [`meta/docusaurus` #13004](https://github.com/meta/docusaurus/discussions/13004),
+in the "Plugins, Themes, Presets and Libs" category.
 
 🔑 **The plugin ships and is installable without either listing.** Neither is a
 release gate — do not hold a publish on a directory.
