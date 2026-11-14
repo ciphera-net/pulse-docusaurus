@@ -4,11 +4,15 @@
 //
 // The decisions here deliberately mirror `pulse-astro/src/pulse.ts` and
 // `pulse-framer/src/pulse.ts`. Two Pulse install surfaces disagreeing about
-// what the tag looks like is a drift bug waiting to happen, so the URLs, the
-// domain grammar and the rule that the companion is a SECOND script are
-// copied, not re-derived.
+// what the tag looks like is a drift bug waiting to happen, so the URL and the
+// domain grammar are copied, not re-derived. The core script loads the
+// interactions script by itself when the site's settings in Pulse switch it on,
+// so the plugin emits one tag only.
 
 export const SCRIPT_URL = "https://js.ciphera.net/script.js"
+/** @deprecated The plugin no longer loads this script; the core script does
+ *  when the site's settings in Pulse switch it on. Kept so the public exports
+ *  do not change. */
 export const COMPANION_URL = "https://js.ciphera.net/script.interactions.js"
 
 /** A registrable hostname: labels of letters, digits and hyphens, at least one
@@ -61,9 +65,8 @@ export interface PulseOptions {
    *  injected without `data-domain` and the tracker falls back to the browser's
    *  own hostname — which is correct for a single-domain site. */
   domain?: string
-  /** Also load the companion script, which records clicks, copies and form
-   *  submits. A SECOND request on purpose: the core script's size is a
-   *  published claim and nothing may be folded into it. */
+  /** @deprecated Ignored since 1.1.0. Switch clicks, copies and form submits
+   *  in your site's settings in Pulse (Settings > General). */
   companion?: boolean
   /** Route events through your own proxy origin. The tracker appends its own
    *  path, so this is a bare origin (`https://example.com`), not a full URL. */
@@ -143,13 +146,5 @@ export function buildHeadTags(
   if (options.api) attributes["data-api"] = String(options.api).replace(/\/+$/, "")
   attributes["src"] = SCRIPT_URL
 
-  const tags: HtmlTagObject[] = [{ tagName: "script", attributes }]
-
-  if (options.companion) {
-    // No `data-domain` on the companion: the tracker resolves the domain once,
-    // from the core script, and a second copy is a second thing to keep in step.
-    tags.push({ tagName: "script", attributes: { defer: true, src: COMPANION_URL } })
-  }
-
-  return tags
+  return [{ tagName: "script", attributes }]
 }

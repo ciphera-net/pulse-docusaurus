@@ -50,6 +50,12 @@ export default function pulseAnalytics(
     )
   }
 
+  if (options.companion !== undefined) {
+    console.warn(
+      "[pulse-docusaurus] The companion option has been ignored since 1.1.0: switch it in your site's settings in Pulse.",
+    )
+  }
+
   const headTags = buildHeadTags(domain, options)
 
   return {

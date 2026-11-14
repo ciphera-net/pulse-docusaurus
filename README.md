@@ -2,7 +2,7 @@
 
 This plugin adds privacy-first analytics to a Docusaurus site. Pulse Analytics
 sets no cookies and never stores IP addresses, and the script the plugin adds
-to your pages is under 3 KB.
+to your pages is about 3 KB.
 
 [Pulse Analytics](https://pulse.ciphera.net) is built by [Ciphera](https://ciphera.net), a
 company in Belgium, and hosted in Switzerland.
@@ -30,7 +30,7 @@ To pass options, use the array form:
 
 ```js
 plugins: [
-  ['@ciphera-net/pulse-docusaurus', { companion: true }],
+  ['@ciphera-net/pulse-docusaurus', { domain: 'example.com' }],
 ],
 ```
 
@@ -42,20 +42,15 @@ The free plan is enough to start.
 | Option | Default | What it does |
 |---|---|---|
 | `domain` | from `url` | The domain your site is registered under in Pulse Analytics. Pass this when `url` is not the domain you track, for example on a preview deployment. |
-| `companion` | `false` | Also record clicks, copies and form submits. It loads a second, separate script (see below). |
 | `api` | none | Route events through your own proxy origin. Enter the origin only (`https://example.com`), without a path, because the tracker appends its own path. |
 | `injectInDev` | `false` | Inject during `docusaurus start` too. It is off by default (see below). |
 
-## Four things worth knowing
+## Three things worth knowing
 
 **It does not run in `docusaurus start`.** The tracker has no localhost guard,
 so a dev server would send real pageviews at your production dashboard. The
 plugin disables itself outside a production build, exactly as Docusaurus's own
 `@docusaurus/plugin-google-gtag` does. Set `injectInDev: true` if you want it.
-
-**The interaction capture is a second request on purpose.** The core script's
-size is a published claim, and nothing gets folded into it to make a feature
-look free. `companion: true` costs you a second, separate file.
 
 **View-source shows the real tag, and there is no inline script.** Not every
 Pulse integration can do this. The Astro one and the Google Tag Manager template
@@ -76,6 +71,13 @@ are identical in HTML5, where any value means true. Build with
 **A strict Content-Security-Policy needs neither `unsafe-inline` nor a nonce for
 this plugin.** It needs only `script-src https://js.ciphera.net` and
 `connect-src https://pulse-api.ciphera.net`.
+
+## What your site's settings in Pulse decide
+
+Scroll depth, outbound links, file downloads, and clicks, copies and form submits
+are each switched on or off in your site's settings in Pulse (Settings → General).
+The tag stays the same, so there is nothing to change here. The old `companion`
+option has been ignored since 1.1.0 and logs one line when it is set.
 
 ## A mistyped domain fails the build
 
