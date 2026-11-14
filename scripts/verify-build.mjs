@@ -70,13 +70,12 @@ const CASES = [
     reject: [/script\.interactions\.js/, /data-api/],
   },
   {
-    name: "explicit domain + api + companion",
+    name: "explicit domain + api, deprecated companion set",
     options: `{ domain: 'chosen.dev', api: 'https://proxy.example.com/', companion: true }`,
     expect: [
       DEFER("", 'data-domain="chosen\\.dev" data-api="https://proxy\\.example\\.com"'),
-      DEFER(".interactions", ""),
     ],
-    reject: [/data-domain="example\.com"/],
+    reject: [/data-domain="example\.com"/, /script\.interactions\.js/, /data-no-/, /data-ignore-/],
   },
 ]
 

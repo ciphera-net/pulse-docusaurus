@@ -31,7 +31,7 @@ const fail = (msg) => {
 
 // ── The published package must stay dependency-free ─────────────────────────
 // A runtime dependency here lands in every consumer's site, and this package
-// exists to add under 3 KB to a page.
+// exists to add about 3 KB to a page.
 const depCount = Object.keys(pkg.dependencies ?? {}).length
 if (depCount === 0) ok("zero runtime dependencies")
 else fail(`expected zero runtime dependencies, found ${depCount}: ${Object.keys(pkg.dependencies).join(", ")}`)

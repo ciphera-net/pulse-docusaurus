@@ -139,15 +139,17 @@ describe("buildHeadTags", () => {
     )
   })
 
-  it("adds the companion as a SECOND script, never folded into the first", () => {
+  it("ignores the deprecated companion option and still emits one script", () => {
     const tags = buildHeadTags("example.com", { companion: true })
-    expect(tags).toHaveLength(2)
-    expect(serialize(tags[1]!)).toBe(`<script defer src="${COMPANION_URL}"></script>`)
+    expect(tags).toHaveLength(1)
+    expect(serialize(tags[0]!)).toBe(`<script defer data-domain="example.com" src="${SCRIPT_URL}"></script>`)
   })
 
-  it("does not repeat data-domain on the companion", () => {
-    const tags = buildHeadTags("example.com", { companion: true })
-    expect(tags[1]!.attributes).not.toHaveProperty("data-domain")
+  it("emits no data-no-* or data-ignore-* attribute", () => {
+    const tags = buildHeadTags("example.com", { companion: true, api: "https://p.example.com" })
+    for (const key of Object.keys(tags[0]!.attributes)) {
+      expect(key).not.toMatch(/^data-(no|ignore)-/)
+    }
   })
 
   it("refuses to inject a domain that did not come through resolveDomain", () => {
@@ -156,6 +158,7 @@ describe("buildHeadTags", () => {
 
   it("emits no inline script at all, so the plugin needs no CSP nonce", () => {
     const tags = buildHeadTags("example.com", { companion: true, api: "https://p.example.com" })
+    expect(tags).toHaveLength(1)
     for (const tag of tags) {
       expect(tag).not.toHaveProperty("innerHTML")
       expect(tag.attributes["src"]).toMatch(/^https:\/\/js\.ciphera\.net\//)

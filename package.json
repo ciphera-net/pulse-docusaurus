@@ -1,7 +1,7 @@
 {
   "name": "@ciphera-net/pulse-docusaurus",
-  "version": "1.0.2",
-  "description": "Pulse Analytics adds privacy-first web analytics to a Docusaurus site with one plugin. It sets no cookies and never stores IP addresses, and the script it adds to your pages is under 3 KB.",
+  "version": "1.1.0",
+  "description": "Pulse Analytics adds privacy-first web analytics to a Docusaurus site with one plugin. It sets no cookies and never stores IP addresses, and the script it adds to your pages is about 3 KB.",
   "license": "Apache-2.0",
   "homepage": "https://pulse.ciphera.net",
   "repository": {
